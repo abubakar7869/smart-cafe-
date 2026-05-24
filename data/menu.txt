@@ -1,0 +1,8 @@
+Coffee,7.0,Drinks,Hot espresso
+Iced Tea,5.0,Drinks,Cold black tea with lemon
+Mango Shake,9.0,Drinks,Fresh mango blended
+Burger,15.0,Fast Food,Classic beef burger
+Pizza Slice,12.0,Fast Food,Margherita slice
+French Fries,8.0,Fast Food,Crispy salted fries
+Cheesecake,22.0,Desserts,Creamy with strawberry sauce
+Brownie,10.0,Desserts,Warm chocolate brownie
