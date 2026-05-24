@@ -1,4 +1,4 @@
-# SmartCafe_fixed
+# SmartCafe
 
 A simple Python CLI demo for a small cafe system. Implements OOP models for menu items, menu management, orders, customers/staff, and file-based persistence for demo/teaching purposes.
 
