@@ -116,6 +116,126 @@ def demo_menu(restaurant: Restaurant):
     menu.display()
 
 
+def parse_category_input(user_input: str) -> Category:
+    input_text = user_input.strip().lower()
+    for category in Category:
+        if input_text in {category.name.lower(), category.value.lower(), category.value.lower().replace(' ', '')}:
+            return category
+    raise ValueError("Invalid category. Please enter Drinks, Fast Food, or Desserts.")
+
+
+def prompt_category() -> Category:
+    print("\nSelect category:")
+    for idx, category in enumerate(Category, start=1):
+        print(f"  {idx}. {category.value}")
+    choice = input("Category number or name: ").strip()
+    if choice.isdigit() and 1 <= int(choice) <= len(Category):
+        return list(Category)[int(choice) - 1]
+    return parse_category_input(choice)
+
+
+def prompt_positive_int(prompt: str) -> int:
+    while True:
+        value = input(prompt).strip()
+        if not value.isdigit() or int(value) <= 0:
+            print("Please enter a valid positive integer.")
+            continue
+        return int(value)
+
+
+def interactive_menu_editor(restaurant: Restaurant):
+    section("Interactive Menu Editor")
+
+    while True:
+        print("\nMenu Editor Actions:")
+        print("  1. Show current menu")
+        print("  2. Add menu item")
+        print("  3. Remove menu item")
+        print("  4. Update item price")
+        print("  5. Done")
+        choice = input("Select action [1-5]: ").strip()
+
+        try:
+            if choice == "1":
+                restaurant.menu.display()
+            elif choice == "2":
+                name = input("Item name: ").strip()
+                price = float(input("Price: ").strip())
+                category = prompt_category()
+                description = input("Description: ").strip()
+                restaurant.menu.add_item(MenuItem(name, price, category, description))
+            elif choice == "3":
+                name = input("Item name to remove: ").strip()
+                category = prompt_category()
+                restaurant.menu.remove_item(name, category)
+            elif choice == "4":
+                name = input("Item name to update: ").strip()
+                category = prompt_category()
+                new_price = float(input("New price: ").strip())
+                restaurant.menu.update_price(name, category, new_price)
+            elif choice == "5":
+                restaurant.save_data()
+                print("[Menu] Menu changes saved.")
+                break
+            else:
+                print("Please choose a number between 1 and 5.")
+        except ValueError as e:
+            print(f"[Input Error] {e}")
+
+
+def interactive_customer_order(restaurant: Restaurant, customer: Customer) -> Order:
+    section("Interactive Customer Ordering")
+    print(f"Welcome, {customer.name}! Let's place your order.")
+
+    order = restaurant.create_order()
+
+    while True:
+        print("\nCustomer Actions:")
+        print("  1. Show menu")
+        print("  2. Add item to order")
+        print("  3. Remove item from order")
+        print("  4. Change item quantity")
+        print("  5. Show current order")
+        print("  6. Checkout")
+        print("  7. Cancel ordering")
+        choice = input("Select action [1-7]: ").strip()
+
+        try:
+            if choice == "1":
+                restaurant.menu.display()
+            elif choice == "2":
+                item_name = input("Item name: ").strip()
+                category = prompt_category()
+                qty = prompt_positive_int("Quantity: ")
+                restaurant.add_item_to_order(order.order_id, item_name, category, qty=qty)
+                print(f"Added {qty} x {item_name} to order.")
+            elif choice == "3":
+                item_name = input("Item name to remove: ").strip()
+                category = prompt_category()
+                restaurant.remove_item_from_order(order.order_id, item_name, category)
+            elif choice == "4":
+                item_name = input("Item name to update: ").strip()
+                category = prompt_category()
+                new_qty = prompt_positive_int("New quantity: ")
+                restaurant.change_order_item_quantity(order.order_id, item_name, category, new_quantity=new_qty)
+            elif choice == "5":
+                print(order)
+            elif choice == "6":
+                if order.is_empty():
+                    print("Cannot checkout an empty order. Add items first.")
+                    continue
+                restaurant.checkout_order(order.order_id, customer_name=customer.name)
+                customer.place_order(order)
+                return order
+            elif choice == "7":
+                print("Order cancelled.")
+                return order
+            else:
+                print("Please choose a number between 1 and 7.")
+        except ValueError as e:
+            print(f"[Order Error] {e}")
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TASK 2: Order System Enhancement
 # ─────────────────────────────────────────────────────────────────────────────
@@ -272,11 +392,17 @@ def main():
     restaurant = Restaurant("Smart Cafe")
     restaurant.load_data()   # Task 3: load menu.txt on startup
 
+    # ── User interaction: menu editing ───────────────────────────────────────────
+    interactive_menu_editor(restaurant)
+
     # ── Task 3: Inheritance demo ──────────────────────────────────────────────
     customer1, customer2 = demo_inheritance()
 
     # ── Task 1: Menu management ───────────────────────────────────────────────
     demo_menu(restaurant)
+
+    # ── User interaction: place a customer order ───────────────────────────────
+    interactive_customer_order(restaurant, customer1)
 
     # ── Task 2: Order system ──────────────────────────────────────────────────
     order = demo_order(restaurant, customer1)
