@@ -1,3 +1,4 @@
+
 # SmartCafe_fixed
 
 A simple Python CLI demo for a small cafe system. Implements OOP models for menu items, menu management, orders, customers/staff, and file-based persistence for demo/teaching purposes.
@@ -49,7 +50,7 @@ python main.py
 - Exceptions from `models/exceptions.py` are raised for invalid operations — see source for exact behavior.
 
 ## Screenshot
-![Smart Cafe demo screenshot](screenshots/smart-cafe-demo.png)
+<img width="704" height="635" alt="secreen shot project" src="https://github.com/user-attachments/assets/a8e28f80-50b7-479b-9f3c-93e384921081" />
 
 The screenshot above shows the CLI output for menu management and admin actions such as updating item prices and removing menu items. Add your screenshot file at `screenshots/smart-cafe-demo.png` to display it in the README.
 
